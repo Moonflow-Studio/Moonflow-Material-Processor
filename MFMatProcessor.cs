@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Moonflow.Core;
+#if MFRefLink
 using Moonflow.MFAssetTools.MFRefLink;
+#endif
 using UnityEditor;
 using UnityEngine;
 
@@ -11,12 +13,17 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
         public List<MFMatFilterCon> matConList;
 
         public List<MFMatDataSetter> matDataSetterList;
-
+    #if MFRefLink
         private List<MFRefMaterialData> _matList;
         private HashSet<MFRefLinkData> _matCache;
+        public delegate void MaterialFilter(ref List<MFRefMaterialData> matList, MFMatFilterCon condition);
+    #else
+        private List<Material> _matList;
+        public delegate void MaterialFilter(ref List<Material> matList, MFMatFilterCon condition);
+    #endif
+        
         private List<Material> _matResults;
         
-        public delegate void MaterialFilter(ref List<MFRefMaterialData> matList, MFMatFilterCon condition);
 
         public MaterialFilter GetMaterialByFilter;
 
@@ -47,10 +54,15 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
 
         public MFMatProcessor()
         {
+#if MFRefLink
             _matList = new List<MFRefMaterialData>();
+#else
+            _matList = new List<Material>();
+#endif
             matConList = new List<MFMatFilterCon>();
             matDataSetterList = new List<MFMatDataSetter>();
         }
+#if MFRefLink
         public bool GetCache()
         {
             _matCache = MFRefLinkCore.GetFilterCache("Material");
@@ -58,9 +70,11 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 return false;
             return true;
         }
+#endif
         
         private void GetMatAssetList()
         {
+#if MFRefLink
             if(_matList == null)
                 _matList = new List<MFRefMaterialData>();
             _matList.Clear();
@@ -71,6 +85,17 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                     _matList.Add(mat as MFRefMaterialData);
                 }
             }
+#else
+            if(_matList == null)
+                _matList = new List<Material>();
+            _matList.Clear();
+            var assets = AssetDatabase.FindAssets("t:Material", new[] {"Assets", "Packages"});
+            foreach (var asset in assets)
+            {
+                var mat = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(asset));
+                _matList.Add(mat);
+            }
+#endif
         }
 
         public List<Material> GetMatList(bool passFilter)
@@ -86,8 +111,11 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 return _matResults;
             }
         }
-        
+#if MFRefLink
         public List<Material> GetMatList(List<MFRefMaterialData> matList)
+#else
+        public List<Material> GetMatList(List<Material> matList)
+#endif
         {
             if (_matResults == null)
             {
@@ -101,14 +129,20 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             foreach (var matAsset in matList)
             {
                 //load material by asset path from matAsset
+#if MFRefLink
                 _matResults.Add(AssetDatabase.LoadAssetAtPath<Material>(matAsset.path));
+#else
+                _matResults.Add(matAsset);
+#endif
             }
             return _matResults;
         }
 
         public void FilteredMatList()
         {
+#if MFRefLink
             MFRefLinkCore.ShaderMaterialLink();
+#endif
             //split MatConList to or and and
             Prework(out MFMatFilterCon[] orCon, out MFMatFilterCon[] andCon);
             //get material asset loading from _matList by guid, add to _matResult
@@ -315,7 +349,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             orCon = orList.ToArray();
             andCon = andList.ToArray();
         }
-
+#if MFRefLink
         public MFRefMaterialData GetRefMaterialData(Material mat)
         {
             //get guid of mat
@@ -326,6 +360,6 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             }
             return null;
         }
-        
+#endif
     }
 }

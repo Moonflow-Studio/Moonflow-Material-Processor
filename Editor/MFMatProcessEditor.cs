@@ -1,5 +1,7 @@
 using System;
+#if MFRefLink
 using Tools.Editor.MFAssetTools.MFRefLink.Editor;
+#endif
 using UnityEditor;
 using UnityEngine;
 
@@ -23,7 +25,11 @@ namespace Moonflow.MFAssetTools.MFMatProcessor.Editor
         [MenuItem("Moonflow/Tools/Material Transfer #%W")]
         public static void ShowWindow()
         {
+#if MFRefLink
             var _ins = GetWindow<MFMatProcessEditor>("Material Transfer");
+#else
+            var _ins = GetWindow<MFMatProcessEditor>("Material Transfer (No RefLink Version)");
+#endif
             _ins.minSize = new Vector2(900, 700);
             _ins.maxSize = new Vector2(900, 700);
         }
@@ -42,6 +48,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor.Editor
                 {
                     using (new EditorGUILayout.HorizontalScope("box"))
                     {
+#if MFRefLink
                         if(GUILayout.Button("Get Cache"))
                         {
                             if (_core.GetCache())
@@ -55,7 +62,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor.Editor
                                 _statusType = MessageType.Error;
                             }
                         }
-
+#endif
                         if (GUILayout.Button("Get Materials"))
                         {
                             _core.FilteredMatList();
@@ -120,11 +127,17 @@ namespace Moonflow.MFAssetTools.MFMatProcessor.Editor
                 EditorGUIUtility.labelWidth = 50;
                 EditorGUILayout.ObjectField(index.ToString(), item, typeof(Material), false, GUILayout.Width(350));
                 EditorGUIUtility.labelWidth = normalWidth;
+#if MFRefLink
                 if (GUILayout.Button("Ref", GUILayout.Width(50)))
                 {
                     var assetData = _core.GetRefMaterialData(item);
                     MFSingleRefGraph.Open(assetData);
                 }
+#else
+                GUI.color = new Color(1,1,1,0.1f);
+                GUILayout.Label("Ref", GUILayout.Width(50));
+                GUI.color = Color.white;
+#endif
             }
             
         }
