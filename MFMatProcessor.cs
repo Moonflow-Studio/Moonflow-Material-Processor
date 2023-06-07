@@ -314,7 +314,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 }
                 case DataSetterType.SetKeyword:
                 {
-                    // matDataSetterList.Add(new MFMatKeywordSetter());
+                    matDataSetterList.Add(new MFMatKeywordSetter());
                     break;
                 }
                 case DataSetterType.SetRenderQueue:
