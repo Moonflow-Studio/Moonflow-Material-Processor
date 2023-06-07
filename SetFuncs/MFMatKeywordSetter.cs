@@ -16,10 +16,13 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 MFEditorUI.DivideLine(Color.gray);
                 using (new EditorGUILayout.HorizontalScope())
                 {
-                    SetToEnable = EditorGUILayout.ToggleLeft(SetToEnable ? "Open" : "Close", SetToEnable, GUILayout.Width(100));
+                    if (GUILayout.Button(SetToEnable ? "Open" : "Close", GUILayout.Width(40)))
+                    {
+                        SetToEnable = !SetToEnable;
+                    }
                     float normalLabelWidth = EditorGUIUtility.labelWidth;
                     EditorGUIUtility.labelWidth = 75;
-                    EditorGUILayout.TextField("Set Keyword", keyword);
+                    EditorGUILayout.TextField("Keyword", keyword);
                     EditorGUIUtility.labelWidth = normalLabelWidth;
                 }
             }
