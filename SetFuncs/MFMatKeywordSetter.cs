@@ -35,6 +35,23 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
 
         public override void SetData(Material mat)
         {
+            //check if keyword is declared in material
+            var keywords = mat.shaderKeywords;
+            bool hasKeyword = false;
+            for (int i = 0; i < keywords.Length; i++)
+            {
+                if (keywords[i] == keyword)
+                {
+                    hasKeyword = true;
+                }
+            }
+            
+            if (!hasKeyword)
+            {
+                Debug.LogError($"Keyword {keyword} is not declared in material {mat.name}");
+                return;
+            }
+
             if (SetToEnable)
             {
                 mat.EnableKeyword(keyword);
