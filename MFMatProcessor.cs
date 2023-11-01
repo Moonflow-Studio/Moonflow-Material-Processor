@@ -382,6 +382,8 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
         public string CopyMatNameList()
         {
             string nameList = "";
+            if(_matResults == null || _matResults.Count == 0)
+                return nameList;
             foreach (var mat in _matResults)
             {
                 nameList += mat.name + "\n";

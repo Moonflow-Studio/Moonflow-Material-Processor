@@ -12,6 +12,12 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
         public string newChannel = "xyzw";
         public bool colorMode;
 
+        public MFMatVectorSetter()
+        {
+            oldChannel = "xyzw";
+            newChannel = "xyzw";
+            colorMode = false;
+        }
         public MFMatVectorSetter(bool c)
         {
             colorMode = c;
