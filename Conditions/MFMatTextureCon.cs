@@ -31,7 +31,14 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                     {
                         if (propertyName == name)
                         {
-                            return mat.GetTexture(propertyName) == texture;
+                            if (equal)
+                            {
+                                return mat.GetTexture(propertyName) == texture;
+                            }
+                            else
+                            {
+                                return mat.GetTexture(propertyName) != texture;
+                            }
                         }
                     }
                 }

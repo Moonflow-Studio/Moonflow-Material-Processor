@@ -7,6 +7,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
     public class MFMatFloatSetter : MFMatDataSetter<float>
     {
         public override string displayName => "Float";
+        [SerializeField]public string expression = "x";
         public override void SetData(Material mat)
         {
             if (!deliverMode)
@@ -20,9 +21,16 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             {
                 if (GetOldProp(mat, out float oldData) && mat.HasProperty(targetPropName))
                 {
+                    oldData = TranslateOldData(oldData);
                     mat.SetFloat(targetPropName, oldData);
                 }
             }
+        }
+        
+        private float TranslateOldData(float oldProp)
+        {
+            ExpressionEvaluator.Evaluate(expression.Replace("x", oldProp.ToString()), out float result);
+            return result;
         }
 
         protected override bool GetOldProp(Material mat, out float oldProp)
@@ -37,10 +45,10 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                     return true;
                 }
             }
+
             oldProp = 0;
             return false;
         }
-        
 
         public override void DisplayManualData()
         {
@@ -48,6 +56,14 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             EditorGUIUtility.labelWidth = 100;
             manualData = EditorGUILayout.FloatField("Set Float Value", manualData);
             EditorGUIUtility.labelWidth = oldwidth;
+        }
+        
+        public override void SpecialDeliverDisplay()
+        {
+            base.SpecialDeliverDisplay();
+            GUI.color = expression.Contains("x") ? Color.white : Color.red;
+            expression = EditorGUILayout.TextField("y = ", expression);
+            GUI.color = Color.white;
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
-    public abstract class MFMatFilterCon
+    public abstract class MFMatFilterCon : ScriptableObject
     {
         public abstract string condName { get; }
         public bool or;

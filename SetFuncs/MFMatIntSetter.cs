@@ -9,6 +9,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
         public override string displayName => QueueMode ? "Queue":"Int";
 
         public bool QueueMode;
+        [SerializeField]public string expression = "x";
 
         public MFMatIntSetter(bool queueMode)
         {
@@ -33,6 +34,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 {
                     if (GetOldProp(mat, out int oldData) && mat.HasProperty(targetPropName))
                     {
+                        oldData = TranslateOldData(oldData);
                         mat.SetInt(targetPropName, oldData);
                     }
                 }
@@ -54,6 +56,12 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                     DisplayManualData();
                 }
             }
+        }
+        
+        private int TranslateOldData(int oldProp)
+        {
+            ExpressionEvaluator.Evaluate(expression.Replace("x", oldProp.ToString()), out int result);
+            return result;
         }
 
         protected override bool GetOldProp(Material mat, out int oldProp)
@@ -79,6 +87,14 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             EditorGUIUtility.labelWidth = 100;
             manualData = EditorGUILayout.IntField($"Set {targetType} Value", manualData);
             EditorGUIUtility.labelWidth = oldwidth;
+        }
+        
+        public override void SpecialDeliverDisplay()
+        {
+            base.SpecialDeliverDisplay();
+            GUI.color = expression.Contains("x") ? Color.white : Color.red;
+            expression = EditorGUILayout.TextField("y = ", expression);
+            GUI.color = Color.white;
         }
     }
 }

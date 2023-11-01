@@ -5,15 +5,17 @@ using UnityEngine;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
-    public abstract class MFMatDataSetter
+    public abstract class MFMatDataSetter : ScriptableObject
     {
         public abstract string displayName { get; }
         public string targetPropName;
         public string oldPropName;
         public bool deliverMode;
+        protected bool noDeliver = false;
 
         public virtual bool isLegal()
         { 
+            if (noDeliver) return true;
             if(string.IsNullOrEmpty(targetPropName) || string.IsNullOrEmpty(oldPropName))
                 return false;
             return true;
@@ -34,12 +36,13 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             using (new EditorGUILayout.VerticalScope("box", GUILayout.Width(400)))
             {
                 EditorGUILayout.LabelField(displayName, EditorStyles.boldLabel);
+                if (noDeliver) return;
                 MFEditorUI.DivideLine(Color.gray);
                 float normalLabelWidth = EditorGUIUtility.labelWidth;
                 using (new EditorGUILayout.HorizontalScope(GUILayout.Width(400)))
                 {
                     deliverMode = EditorGUILayout.ToggleLeft("Deliver Old Data", deliverMode);
-                    EditorGUIUtility.labelWidth = 125;
+                    EditorGUIUtility.labelWidth = 75;
                     GUI.color = string.IsNullOrEmpty(targetPropName) ? Color.red : Color.white;
                     targetPropName = EditorGUILayout.TextField("New Param Name", targetPropName);
                     GUI.color = Color.white;
@@ -52,6 +55,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                     GUI.color = string.IsNullOrEmpty(oldPropName) ? Color.red : Color.white;
                     oldPropName = EditorGUILayout.TextField("Old Param Name", oldPropName);
                     GUI.color = Color.white;
+                    SpecialDeliverDisplay();
                 }
                 else
                 {
@@ -61,6 +65,10 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 EditorGUIUtility.fieldWidth = normalFieldWidth;
                 SpecialDisplay();
             }
+        }
+        public virtual void SpecialDeliverDisplay()
+        {
+            
         }
         public abstract void DisplayManualData();
 

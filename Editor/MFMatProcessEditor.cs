@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Moonflow.MFAssetTools.MFMatProcessor.EnternalConfigs;
 #if MFRefLink
 using Tools.Editor.MFAssetTools.MFRefLink.Editor;
 #endif
@@ -21,6 +23,9 @@ namespace Moonflow.MFAssetTools.MFMatProcessor.Editor
         private int _tabIndex = 0;
         
         private static float _leftWidth = 450;
+        
+        private MFMatFilterConConfig _conConfig;
+        private MFMatSetterConfig _setConfig;
         //create window
         [MenuItem("Moonflow/Tools/Material Transfer #%W")]
         public static void ShowWindow()
@@ -114,6 +119,11 @@ namespace Moonflow.MFAssetTools.MFMatProcessor.Editor
                     {
                         MFEditorUI.DrawFlipList(DrawMatItem,_core.GetMatList(false), ref _flipListIndex,  20);
                     }
+                    if(GUILayout.Button("Copy List"))
+                    {
+                        string matNameList = _core.CopyMatNameList();
+                        EditorGUIUtility.systemCopyBuffer = matNameList;
+                    }
                 }
                 #endregion
             }
@@ -148,8 +158,46 @@ namespace Moonflow.MFAssetTools.MFMatProcessor.Editor
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
+                    _setConfig = EditorGUILayout.ObjectField(_setConfig, typeof(MFMatSetterConfig)) as MFMatSetterConfig;
+                    if (GUILayout.Button("Read Config"))
+                    {
+                        if (_setConfig != null)
+                        {
+                            _core.matDataSetterList = new List<MFMatDataSetter>();
+                            for (int i = 0; i < _setConfig.setters.Length; i++)
+                            {
+                                _core.matDataSetterList.Add(_setConfig.setters[i]);
+                            }
+                        }
+                    }
+
+                    if (GUILayout.Button("Save All Config"))
+                    {
+                        if (_setConfig == null)
+                        {
+                            MFMatSetterConfig newConfig = ScriptableObject.CreateInstance<MFMatSetterConfig>();
+                            newConfig.setters = new MFMatDataSetter[_core.matDataSetterList.Count];
+                            newConfig.setters = _core.matDataSetterList.ToArray();
+                            string path = EditorUtility.SaveFilePanelInProject("Save Setter Config", "NewMFMatSetterConfig", "asset", "Save the rule config due to replace material properties as a config asset");
+                            if (path.Length != 0)
+                            {
+                                AssetDatabase.CreateAsset(newConfig, path);
+                                AssetDatabase.Refresh();
+                            }
+                        }
+                        else
+                        {
+                            _setConfig.setters = new MFMatDataSetter[_core.matDataSetterList.Count];
+                            _core.matDataSetterList.CopyTo(_setConfig.setters);
+                            EditorUtility.SetDirty(_setConfig);
+                            AssetDatabase.SaveAssetIfDirty(_setConfig);
+                        }
+                    }
+                }
+                using (new EditorGUILayout.HorizontalScope())
+                {
                     //Draw a popup to add new MFMatTransCon
-                    EditorGUILayout.LabelField("Add Function", GUILayout.Width(100));
+                    EditorGUILayout.LabelField("Add Setter", GUILayout.Width(100));
                     _newSetterType = (MFMatProcessor.DataSetterType)EditorGUILayout.EnumPopup(_newSetterType);
                     if (GUILayout.Button("Add"))
                     {
@@ -187,10 +235,48 @@ namespace Moonflow.MFAssetTools.MFMatProcessor.Editor
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
+                    _conConfig = EditorGUILayout.ObjectField(_conConfig, typeof(MFMatFilterConConfig)) as MFMatFilterConConfig;
+                    if (GUILayout.Button("Read Config"))
+                    {
+                        if (_conConfig != null)
+                        {
+                            _core.matConList = new List<MFMatFilterCon>();
+                            for (int i = 0; i < _conConfig.filters.Length; i++)
+                            {
+                                _core.matConList.Add(_conConfig.filters[i]);
+                            }
+                        }
+                    }
+
+                    if (GUILayout.Button("Save All Config"))
+                    {
+                        if (_conConfig == null)
+                        {
+                            MFMatFilterConConfig newConfig = ScriptableObject.CreateInstance<MFMatFilterConConfig>();
+                            newConfig.filters = new MFMatFilterCon[_core.matConList.Count];
+                            newConfig.filters = _core.matConList.ToArray();
+                            string path = EditorUtility.SaveFilePanelInProject("Save Filter Config", "NewMatFilterCon", "asset", "Save the rule config due to filter material as a config asset");
+                            if (path.Length != 0)
+                            {
+                                AssetDatabase.CreateAsset(newConfig, path);
+                                AssetDatabase.Refresh();
+                            }
+                        }
+                        else
+                        {
+                            _conConfig.filters = new MFMatFilterCon[_core.matConList.Count];
+                            _core.matConList.CopyTo(_conConfig.filters);
+                            EditorUtility.SetDirty(_conConfig);
+                            AssetDatabase.SaveAssetIfDirty(_conConfig);
+                        }
+                    }
+                }
+                using (new EditorGUILayout.HorizontalScope())
+                {
                     //Draw a popup to add new MFMatTransCon
-                    EditorGUILayout.LabelField("Add Condition", GUILayout.Width(100));
+                    // EditorGUILayout.LabelField("新增条件", GUILayout.Width(100));
                     _newFilterType = (MFMatProcessor.FilterType)EditorGUILayout.EnumPopup(_newFilterType);
-                    if (GUILayout.Button("Add"))
+                    if (GUILayout.Button("Add Filter"))
                     {
                         _core.CreateFilter(_newFilterType);
                     }
@@ -206,21 +292,24 @@ namespace Moonflow.MFAssetTools.MFMatProcessor.Editor
                 using (var s = new EditorGUILayout.ScrollViewScope(_funcScroll, GUILayout.Width(_leftWidth), GUILayout.Height(500)))
                 {
                     _funcScroll = s.scrollPosition;
-                    //show all MFMatTransCon
-                    for (int i = 0; i < _core.matConList.Count; i++)
+                    if (_core.matConList != null)
                     {
-                        using (new EditorGUILayout.HorizontalScope("box", GUILayout.Width(_leftWidth - 5)))
+                        //show all MFMatTransCon
+                        for (int i = 0; i < _core.matConList.Count; i++)
                         {
-                            //delete MFMatTransCon
-                            _core.matConList[i].Draw();
-                            //show MFMatTransCon
-                            GUI.color = Color.red;
-                            if (GUILayout.Button("X", GUILayout.Width(20)))
+                            using (new EditorGUILayout.HorizontalScope("box", GUILayout.Width(_leftWidth - 5)))
                             {
-                                _core.matConList.RemoveAt(i);
-                            }
+                                //delete MFMatTransCon
+                                _core.matConList[i].Draw();
+                                //show MFMatTransCon
+                                GUI.color = Color.red;
+                                if (GUILayout.Button("X", GUILayout.Width(20)))
+                                {
+                                    _core.matConList.RemoveAt(i);
+                                }
 
-                            GUI.color = Color.white;
+                                GUI.color = Color.white;
+                            }
                         }
                     }
                 }

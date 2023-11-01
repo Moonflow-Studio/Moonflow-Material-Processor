@@ -36,7 +36,9 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             Texture,
             Keyword,
             RenderQueue,
-            Reference
+            Reference,
+            Name,
+            Path
         }
 
         public enum DataSetterType
@@ -49,6 +51,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             SetTexture,
             SetKeyword,
             SetRenderQueue,
+            CleanCache
         }
 
         public MFMatProcessor()
@@ -241,42 +244,52 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             {
                 case FilterType.Shader:
                 {
-                    matConList.Add(new MFMatShaderCon());
+                    matConList.Add(ScriptableObject.CreateInstance<MFMatShaderCon>());
                     break;
                 }
                 case FilterType.Float:
                 {
-                    matConList.Add(new MFMatFloatCon());
+                    matConList.Add(ScriptableObject.CreateInstance<MFMatFloatCon>());
                     break;
                 }
                 case FilterType.Vector:
                 {
-                    matConList.Add(new MFMatVectorCon());
+                    matConList.Add(ScriptableObject.CreateInstance<MFMatVectorCon>());
                     break;
                 }
                 case FilterType.Texture:
                 {
-                    matConList.Add(new MFMatTextureCon());
+                    matConList.Add(ScriptableObject.CreateInstance<MFMatTextureCon>());
                     break;
                 }
                 case FilterType.Int:
                 {
-                    matConList.Add(new MFMatIntCon());
+                    matConList.Add(ScriptableObject.CreateInstance<MFMatIntCon>());
                     break;
                 }
                 case FilterType.Keyword:
                 {
-                    matConList.Add(new MFMatKeywordCon());
+                    matConList.Add(ScriptableObject.CreateInstance<MFMatKeywordCon>());
                     break;
                 }
                 case FilterType.RenderQueue:
                 {
-                    matConList.Add(new MFMatQueueCon());
+                    matConList.Add(ScriptableObject.CreateInstance<MFMatQueueCon>());
                     break;
                 }
                 case FilterType.Reference:
                 {
-                    matConList.Add(new MFMatRefCon());
+                    matConList.Add(ScriptableObject.CreateInstance<MFMatRefCon>());
+                    break;
+                }
+                case FilterType.Name:
+                {
+                    matConList.Add(ScriptableObject.CreateInstance<MFMatNameCon>());
+                    break;
+                }
+                case FilterType.Path:
+                {
+                    matConList.Add(ScriptableObject.CreateInstance<MFPathCon>());
                     break;
                 }
             }
@@ -288,42 +301,47 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             {
                 case DataSetterType.SetFloat:
                 {
-                    matDataSetterList.Add(new MFMatFloatSetter());
+                    matDataSetterList.Add(ScriptableObject.CreateInstance<MFMatFloatSetter>());
                     break;
                 }
                 case DataSetterType.SetVector:
                 {
-                    matDataSetterList.Add(new MFMatVectorSetter(false));
+                    matDataSetterList.Add(ScriptableObject.CreateInstance<MFMatVectorSetter>());
                     break;
                 }
                 case DataSetterType.SetColor:
                 {
-                    matDataSetterList.Add(new MFMatVectorSetter(true));
+                    matDataSetterList.Add(ScriptableObject.CreateInstance<MFMatVectorSetter>());
                     break;
                 }
                 case DataSetterType.SetTexture:
                 {
-                    matDataSetterList.Add(new MFMatTextureSetter());
+                    matDataSetterList.Add(ScriptableObject.CreateInstance<MFMatTextureSetter>());
                     break;
                 }
                 case DataSetterType.SetInt:
                 {
-                    matDataSetterList.Add(new MFMatIntSetter(false));
+                    matDataSetterList.Add(ScriptableObject.CreateInstance<MFMatIntSetter>());
                     break;
                 }
                 case DataSetterType.SetKeyword:
                 {
-                    matDataSetterList.Add(new MFMatKeywordSetter());
+                    matDataSetterList.Add(ScriptableObject.CreateInstance<MFMatKeywordSetter>());
                     break;
                 }
                 case DataSetterType.SetRenderQueue:
                 {
-                    matDataSetterList.Add(new MFMatIntSetter( true));
+                    matDataSetterList.Add(ScriptableObject.CreateInstance<MFMatIntSetter>());
                     break;
                 }
                 case DataSetterType.SetShader:
                 {
-                    matDataSetterList.Add(new MFMatShaderSetter());
+                    matDataSetterList.Add(ScriptableObject.CreateInstance<MFMatShaderSetter>());
+                    break;
+                }
+                case DataSetterType.CleanCache:
+                {
+                    matDataSetterList.Add(ScriptableObject.CreateInstance<MFMatCacheCleanSetter>());
                     break;
                 }
             }
@@ -360,5 +378,20 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             return null;
         }
 #endif
+        
+        public string CopyMatNameList()
+        {
+            string nameList = "";
+            foreach (var mat in _matResults)
+            {
+                nameList += mat.name + "\n";
+            }
+            return nameList;
+        }
+
+        public void ForceMatListSetter(List<Material> materials)
+        {
+            _matResults = materials;
+        }
     }
 }
