@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
     {
         public override string displayName => "Float";
         [SerializeField]public string expression = "x";
+        
         public override void SetData(Material mat)
         {
             if (!deliverMode)
@@ -26,7 +28,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 }
             }
         }
-        
+
         private float TranslateOldData(float oldProp)
         {
             ExpressionEvaluator.Evaluate(expression.Replace("x", oldProp.ToString()), out float result);
@@ -45,19 +47,16 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                     return true;
                 }
             }
-
             oldProp = 0;
             return false;
         }
+        
 
         public override void DisplayManualData()
         {
-            float oldwidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 100;
-            manualData = EditorGUILayout.FloatField("Set Float Value", manualData);
-            EditorGUIUtility.labelWidth = oldwidth;
+            manualData = EditorGUILayout.FloatField("设置值", manualData);
         }
-        
+
         public override void SpecialDeliverDisplay()
         {
             base.SpecialDeliverDisplay();

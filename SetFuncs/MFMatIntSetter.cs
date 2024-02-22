@@ -8,9 +8,8 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
     {
         public override string displayName => QueueMode ? "Queue":"Int";
 
-        public bool QueueMode;
+        [SerializeField]public bool QueueMode;
         [SerializeField]public string expression = "x";
-
         public MFMatIntSetter(bool queueMode)
         {
             QueueMode = queueMode;
@@ -57,7 +56,6 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 }
             }
         }
-        
         private int TranslateOldData(int oldProp)
         {
             ExpressionEvaluator.Evaluate(expression.Replace("x", oldProp.ToString()), out int result);
@@ -83,10 +81,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
         public override void DisplayManualData()
         {
             string targetType = QueueMode ? "Queue" : "Int";
-            float oldwidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 100;
-            manualData = EditorGUILayout.IntField($"Set {targetType} Value", manualData);
-            EditorGUIUtility.labelWidth = oldwidth;
+            manualData = EditorGUILayout.IntField($"设置{targetType}值", manualData);
         }
         
         public override void SpecialDeliverDisplay()

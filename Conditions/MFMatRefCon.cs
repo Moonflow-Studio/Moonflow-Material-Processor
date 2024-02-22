@@ -1,14 +1,17 @@
+using System;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
+    [Serializable]
     public class MFMatRefCon : MFMatFilterCon
     {
-        public bool accurate;
-        public string name;
-        public Object obj;
-        public override string condName => "Reference";
+        [SerializeField]public bool accurate;
+        [SerializeField]public string name;
+        [SerializeField]public Object obj;
+        public override string condName => "引用";
         public override bool Check(Material mat)
         {
             //getpath of the object
@@ -38,23 +41,27 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             return false;
         }
 
-        public override void DrawSpecial()
+        public override void DrawStandard()
         {
-            base.DrawSpecial();
+            base.DrawStandard();
             using (new EditorGUILayout.HorizontalScope())
             {
-                accurate = EditorGUILayout.ToggleLeft("", accurate, GUILayout.Width(20));
-                EditorGUILayout.LabelField("Accurate", accurate ? EditorStyles.boldLabel : EditorStyles.label,GUILayout.Width(60));
-                EditorGUILayout.LabelField(" / " ,GUILayout.Width(10));
-                EditorGUILayout.LabelField("Including", accurate ? EditorStyles.label : EditorStyles.boldLabel ,GUILayout.Width(60));
-                EditorGUILayout.LabelField(" " ,GUILayout.Width(31));
+                // accurate = EditorGUILayout.ToggleLeft("", accurate, GUILayout.Width(20));
+                if (GUILayout.Button(accurate ? "精确匹配" : "包含名字",GUILayout.Width(120)))
+                {
+                    accurate = !accurate;
+                }
+                // EditorGUILayout.LabelField("精确匹配", accurate ? EditorStyles.boldLabel : EditorStyles.label,GUILayout.Width(50));
+                // EditorGUILayout.LabelField(" / " ,GUILayout.Width(10));
+                // EditorGUILayout.LabelField("包含名字", accurate ? EditorStyles.label : EditorStyles.boldLabel ,GUILayout.Width(50));
+                // EditorGUILayout.LabelField("", GUILayout.Width(30));
                 if (accurate)
                 {
-                    obj = EditorGUILayout.ObjectField(obj, typeof(Object), false, GUILayout.Width(80));
+                    obj = EditorGUILayout.ObjectField(obj, typeof(Object), false, GUILayout.Width(160));
                 }
                 else
                 {
-                    name = EditorGUILayout.TextField(name, GUILayout.Width(80));
+                    name = EditorGUILayout.TextField(name, GUILayout.Width(160));
                 }
             }
         }

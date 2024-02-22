@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -5,17 +6,18 @@ using UnityEngine;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
+    [Serializable]
     public abstract class MFMatDataSetter : ScriptableObject
     {
         public abstract string displayName { get; }
-        public string targetPropName;
-        public string oldPropName;
-        public bool deliverMode;
+        [SerializeField]public string targetPropName;
+        [SerializeField]public string oldPropName;
+        [SerializeField]public bool deliverMode;
         protected bool noDeliver = false;
 
         public virtual bool isLegal()
-        { 
-            if (noDeliver) return true;
+        {
+            if (noDeliver || !deliverMode) return true;
             if(string.IsNullOrEmpty(targetPropName) || string.IsNullOrEmpty(oldPropName))
                 return false;
             return true;
@@ -41,10 +43,10 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 float normalLabelWidth = EditorGUIUtility.labelWidth;
                 using (new EditorGUILayout.HorizontalScope(GUILayout.Width(400)))
                 {
-                    deliverMode = EditorGUILayout.ToggleLeft("Deliver Old Data", deliverMode);
+                    deliverMode = EditorGUILayout.ToggleLeft("传递旧数值", deliverMode);
                     EditorGUIUtility.labelWidth = 75;
                     GUI.color = string.IsNullOrEmpty(targetPropName) ? Color.red : Color.white;
-                    targetPropName = EditorGUILayout.TextField("New Param Name", targetPropName);
+                    targetPropName = EditorGUILayout.TextField("新参数名", targetPropName);
                     GUI.color = Color.white;
                 }
                 EditorGUIUtility.labelWidth = 50;
@@ -53,7 +55,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 if (deliverMode)
                 {
                     GUI.color = string.IsNullOrEmpty(oldPropName) ? Color.red : Color.white;
-                    oldPropName = EditorGUILayout.TextField("Old Param Name", oldPropName);
+                    oldPropName = EditorGUILayout.TextField("旧参数名", oldPropName);
                     GUI.color = Color.white;
                     SpecialDeliverDisplay();
                 }
@@ -66,10 +68,12 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 SpecialDisplay();
             }
         }
+
         public virtual void SpecialDeliverDisplay()
         {
             
         }
+
         public abstract void DisplayManualData();
 
         public virtual void SpecialDisplay()

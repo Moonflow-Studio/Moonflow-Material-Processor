@@ -1,15 +1,17 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
-{
+{    
+    [Serializable]
     public abstract class MFMatBoolCon : MFMatFilterCon
     {
-        public bool equal;
+        [SerializeField]public bool equal;
 
-        public override void DrawSpecial()
+        public override void DrawStandard()
         {
-            base.DrawSpecial();
+            base.DrawStandard();
             using (new EditorGUILayout.HorizontalScope())
             {
                 DrawLeft(120);
@@ -27,7 +29,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                DrawRight(100);
+                DrawRight(120);
             }
         }
 

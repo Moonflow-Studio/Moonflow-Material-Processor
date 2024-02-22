@@ -5,11 +5,12 @@ using UnityEngine.Rendering;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
+    [Serializable]
     public class MFMatIntCon : MFMatValueCon
     {
-        public string name;
-        public int threshold;
-        public override string condName => "Int";
+        [SerializeField]public string name;
+        [SerializeField]public int threshold;
+        public override string condName => "整数";
         public override bool Check(Material mat)
         {
             if (mat.HasInteger(name))

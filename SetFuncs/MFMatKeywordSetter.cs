@@ -1,3 +1,4 @@
+using Moonflow.Core;
 using UnityEditor;
 using UnityEngine;
 
@@ -5,8 +6,8 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
 {
     public class MFMatKeywordSetter : MFMatDataSetter<string>
     {
-        public bool SetToEnable;
-        public string keyword;
+        [SerializeField]public bool SetToEnable;
+        [SerializeField]public string keyword;
         public override string displayName => "Keyword";
         public override void Draw()
         {
@@ -16,7 +17,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 MFEditorUI.DivideLine(Color.gray);
                 using (new EditorGUILayout.HorizontalScope())
                 {
-                    if (GUILayout.Button(SetToEnable ? "Open" : "Close", GUILayout.Width(40)))
+                    if (GUILayout.Button(SetToEnable ? "开启" : "关闭", GUILayout.Width(40)))
                     {
                         SetToEnable = !SetToEnable;
                     }
@@ -51,7 +52,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 Debug.LogError($"Keyword {keyword} is not declared in material {mat.name}");
                 return;
             }
-
+            
             if (SetToEnable)
             {
                 mat.EnableKeyword(keyword);

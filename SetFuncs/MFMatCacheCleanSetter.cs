@@ -5,7 +5,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
 {
     public class MFMatCacheCleanSetter : MFMatDataSetter
     {
-        public override string displayName => "Old Saved Properties Cleaner";
+        public override string displayName => "旧参数清理";
         public override void DisplayManualData()
         {
             noDeliver = true;
@@ -48,7 +48,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
         {
             if (!HasShader(mat))
             {
-                Debug.LogError("Material " + mat.name + " doesn't have a shader");
+                Debug.LogError("材质 " + mat.name + " 没有着色器");
                 return;
             }
  

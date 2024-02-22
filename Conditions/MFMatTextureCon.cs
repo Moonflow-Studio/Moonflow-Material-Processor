@@ -1,14 +1,16 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
+    [Serializable]
     public class MFMatTextureCon : MFMatBoolCon
     {
-        public bool any;
-        public string name;
-        public Texture2D texture;
-        public override string condName => "Texture";
+        [SerializeField]public bool any;
+        [SerializeField]public string name;
+        [SerializeField]public Texture2D texture;
+        public override string condName => "纹理";
 
         private string textureGUID;
         public override bool Check(Material mat)
@@ -72,7 +74,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
 
         public override void DrawLeft(float width)
         {
-            any = EditorGUILayout.ToggleLeft("Any", any, GUILayout.Width(any ? width : 40));
+            any = EditorGUILayout.ToggleLeft("任意", any, GUILayout.Width(any ? width : 40));
             if (!any)
             {
                 name = EditorGUILayout.TextField(name, GUILayout.Width(width - 43));

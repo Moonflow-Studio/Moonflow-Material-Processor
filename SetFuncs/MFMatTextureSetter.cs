@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,6 +7,20 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
     public class MFMatTextureSetter : MFMatDataSetter<Texture>
     {
         public override string displayName => "Texture";
+
+        protected override bool GetOldProp(Material mat, out Texture data)
+        {
+            try
+            {
+                data = mat.GetTexture(oldPropName);
+            }
+            catch (Exception e)
+            {
+                data = default;
+                return false;
+            }
+            return true;
+        }
 
         public override bool isLegal()
         {
@@ -42,10 +57,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
 
         public override void DisplayManualData()
         {
-            float oldwidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 150;
-            manualData = EditorGUILayout.ObjectField("Set Texture Reference", manualData, typeof(Texture), false) as Texture;
-            EditorGUIUtility.labelWidth = oldwidth;
+            manualData = EditorGUILayout.ObjectField("设置贴图", manualData, typeof(Texture), false) as Texture;
         }
     }
 }

@@ -1,12 +1,15 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
+    [Serializable]
+
     public class MFMatKeywordCon : MFMatBoolCon
     {
-        public string keyword;
-        public bool needEnabled;
+        [SerializeField]public string keyword;
+        [SerializeField]public bool needEnabled;
         public override string condName => "Keyword";
         
         public override bool Check(Material mat)
@@ -39,7 +42,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
         
         public override void DrawLeft(float width)
         {
-            needEnabled = EditorGUILayout.ToggleLeft("Need Enable", needEnabled, GUILayout.Width(width));
+            needEnabled = EditorGUILayout.ToggleLeft("必须已启用", needEnabled, GUILayout.Width(width));
         }
         
         public override void DrawRight(float width)

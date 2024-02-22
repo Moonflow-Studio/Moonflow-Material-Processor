@@ -8,7 +8,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
     {
         public override string displayName => "Shader";
 
-        public Shader newShader;
+        [SerializeField]public Shader newShader;
 
         public override bool isLegal()
         {
@@ -27,9 +27,9 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 float normalLabelWidth = EditorGUIUtility.labelWidth;
                 using (new EditorGUILayout.HorizontalScope(GUILayout.Width(400)))
                 {
-                    EditorGUIUtility.labelWidth = 75;
-                    GUI.color = newShader == null ? Color.red : Color.white;
-                    newShader = EditorGUILayout.ObjectField("New Shader", newShader, typeof(Shader), false) as Shader;
+                    EditorGUIUtility.labelWidth = 50;
+                    GUI.color = ReferenceEquals(newShader, null) ? Color.red : Color.white;
+                    newShader = EditorGUILayout.ObjectField("新Shader", newShader, typeof(Shader), false) as Shader;
                     GUI.color = Color.white;
                     EditorGUIUtility.labelWidth = normalLabelWidth;
                 }

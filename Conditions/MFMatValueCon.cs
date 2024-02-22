@@ -1,12 +1,14 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
+    [Serializable]
     public abstract class MFMatValueCon : MFMatFilterCon
     {
-        public CompareFunction comp;
+        [SerializeField]public CompareFunction comp;
         private static string [] compNames = new string[]
         {
             ">", "<", "=", "≠", "≥", "≤"
@@ -17,9 +19,9 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             (int) CompareFunction.NotEqual, (int) CompareFunction.GreaterEqual, (int) CompareFunction.LessEqual
         };
 
-        public override void DrawSpecial()
+        public override void DrawStandard()
         {
-            base.DrawSpecial();
+            base.DrawStandard();
             using (new EditorGUILayout.HorizontalScope())
             {
                 DrawLeft(120);
@@ -35,7 +37,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                DrawRight(100);
+                DrawRight(120);
             }
         }
 

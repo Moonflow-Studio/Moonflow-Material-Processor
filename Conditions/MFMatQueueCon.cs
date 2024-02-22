@@ -1,13 +1,15 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
+    [Serializable]
     public class MFMatQueueCon : MFMatValueCon
     {
-        public int threshold;
-        public override string condName => "Queue";
+        [SerializeField]public int threshold;
+        public override string condName => "队列";
         public override bool Check(Material mat)
         {
             int value = mat.renderQueue;
@@ -37,7 +39,7 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
 
         public override void DrawLeft(float width)
         {
-            EditorGUILayout.LabelField("", GUILayout.Width(width));
+            EditorGUILayout.LabelField("队列", GUILayout.Width(width));
         }
 
         public override void DrawRight(float width)

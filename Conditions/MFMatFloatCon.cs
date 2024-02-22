@@ -5,12 +5,13 @@ using UnityEngine.Rendering;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
+    [Serializable]
     public class MFMatFloatCon : MFMatValueCon
     {
-        public string name;
-        public float threshold;
+        [SerializeField]public string name;
+        [SerializeField]public float threshold;
         
-        public override string condName => "Float";
+        public override string condName => "浮点参数";
 
         public override bool Check(Material mat)
         {

@@ -5,16 +5,18 @@ using UnityEngine.Rendering;
 
 namespace Moonflow.MFAssetTools.MFMatProcessor
 {
+    [Serializable]
     public class MFMatVectorCon: MFMatValueCon
     {
+        [Serializable]
         public enum ChannelType
         {
             x,y,z,w
         }
-        public ChannelType channel;
-        public string name;
-        public float threshold;
-        public override string condName => "Vector";
+        [SerializeField]public ChannelType channel;
+        [SerializeField]public string name;
+        [SerializeField]public float threshold;
+        public override string condName => "向量通道";
         public override bool Check(Material mat)
         {
             

@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Moonflow.Core;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,9 +9,9 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
     {
         public override string displayName => colorMode ? "Color" : "Vector";
 
-        public string oldChannel = "xyzw";
-        public string newChannel = "xyzw";
-        public bool colorMode;
+        [SerializeField]public string oldChannel = "xyzw";
+        [SerializeField]public string newChannel = "xyzw";
+        [SerializeField]public bool colorMode;
 
         public MFMatVectorSetter()
         {
@@ -94,16 +95,16 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
             using (new EditorGUILayout.HorizontalScope())
             {
                 string targetType = colorMode ? "Color" : "Vector4";
-                EditorGUILayout.LabelField($"Set {targetType} Value", GUILayout.Width(125));
+                EditorGUILayout.LabelField($"设置{targetType}值", GUILayout.Width(100));
                 if (colorMode)
                 {
                     Color color = manualData;
-                    color = EditorGUILayout.ColorField("", color, GUILayout.Width(275));
+                    color = EditorGUILayout.ColorField("", color, GUILayout.Width(300));
                     manualData = color;
                 }
                 else
                 {
-                    manualData = EditorGUILayout.Vector4Field("", manualData, GUILayout.Width(275));
+                    manualData = EditorGUILayout.Vector4Field("", manualData, GUILayout.Width(300));
                 }
             }
         }
@@ -112,9 +113,9 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                EditorGUILayout.LabelField("Channel Order", GUILayout.Width(100));
+                EditorGUILayout.LabelField("通道顺序", GUILayout.Width(100));
                 
-                EditorGUILayout.LabelField("Old Channel", GUILayout.Width(80));
+                EditorGUILayout.LabelField("旧通道", GUILayout.Width(50));
                 float normalLabelWidth = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = 5;
                 GUI.color = IsChannelFormatLegal(oldChannel) ? Color.white : Color.red;
@@ -122,9 +123,9 @@ namespace Moonflow.MFAssetTools.MFMatProcessor
                 GUI.color = Color.white;
                 EditorGUIUtility.labelWidth = normalLabelWidth;
                 
-                EditorGUILayout.LabelField(" >>>> ", GUILayout.Width(30));
+                EditorGUILayout.LabelField(" >>>> ", GUILayout.Width(50));
                 
-                EditorGUILayout.LabelField("New Channel", GUILayout.Width(80));
+                EditorGUILayout.LabelField("新通道", GUILayout.Width(50));
                 EditorGUIUtility.labelWidth = 5;
                 GUI.color = IsChannelFormatLegal(newChannel, false, oldChannel.Length)? Color.white : Color.red;
                 newChannel = EditorGUILayout.TextField(".", newChannel, GUILayout.Width(50));
